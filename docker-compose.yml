@@ -1,0 +1,55 @@
+services:
+  manager:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: TaskManager
+    healthcheck:
+      test: curl -sS http://localhost:8080 || exit 1
+      timeout: 20s
+      retries: 5
+    ports:
+      - 8080:8080
+    networks:
+      - task-manager
+    develop:
+      watch:
+        - path: ./src
+          target: ./src
+          action: sync
+    environment:
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: 1234
+    depends_on:
+      database:
+        condition: service_healthy
+    
+  database:
+    image: postgres
+    container_name: PostgreSQL
+    command: -p 5432
+    volumes:
+      - database-data:/postgres
+    networks:
+      - task-manager
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "postgres"]
+      timeout: 20s
+      retries: 5
+    ports:
+      - 5432:5432
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+
+volumes:
+  database-data:
+
+networks:
+  task-manager:
+    driver: "bridge"
+    external: false
