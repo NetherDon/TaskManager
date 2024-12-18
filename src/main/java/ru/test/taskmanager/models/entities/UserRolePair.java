@@ -18,8 +18,14 @@ import ru.test.taskmanager.models.properties.Role;
 
 @Entity
 @Table(name = "roles")
-public final class UserRole implements GrantedAuthority
+public final class UserRolePair implements GrantedAuthority
 {
+    public static final String TABLE_NAME = "roles";
+
+    public static final String ID_COLUMN = "id";
+    public static final String ROLE_COLUMN = "role";
+    public static final String USER_COLUMN = "user";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SuppressWarnings("unused")
@@ -33,9 +39,9 @@ public final class UserRole implements GrantedAuthority
     @Column(nullable = false)
     private Role role;
 
-    protected UserRole() {}
+    protected UserRolePair() {}
 
-    public UserRole(User user, Role role)
+    public UserRolePair(User user, Role role)
     {
         this.user = user;
         this.role = role;
@@ -67,7 +73,7 @@ public final class UserRole implements GrantedAuthority
     public boolean equals(Object obj) 
     {
         if (obj == this) return true;
-        if (obj instanceof UserRole userRole)
+        if (obj instanceof UserRolePair userRole)
         {
             return userRole.role.equals(this.role) 
                 && userRole.user.equals(this.user);

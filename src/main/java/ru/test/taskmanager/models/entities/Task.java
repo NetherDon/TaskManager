@@ -20,9 +20,21 @@ import ru.test.taskmanager.models.properties.TaskPriority;
 import ru.test.taskmanager.models.properties.TaskStatus;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = Task.TABLE_NAME)
 public class Task 
 {
+    public static final String TABLE_NAME = "tasks";
+
+    public static final String ID_COLUMN = "id";
+    public static final String TITLE_COLUMN = "title";
+    public static final String DESCRIPTION_COLUMN = "description";
+    public static final String STATUS_COLUMN = "status";
+    public static final String PRIORITY_COLUMN = "priority";
+    public static final String AUTHOR_COLUMN = "author";
+
+    public static final String EXECUTORS_RELATION = "executors";
+    public static final String COMMENTS_RELATION = "comments";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

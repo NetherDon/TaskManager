@@ -9,9 +9,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "task_executors")
+@Table(name = TaskExecutor.TABLE_NAME)
 public class TaskExecutor 
 {
+    public static final String TABLE_NAME = "task_executors";
+
+    public static final String ID_COLUMN = "id";
+    public static final String USER_COLUMN = "user";
+    public static final String TASK_COLUMN = "task";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

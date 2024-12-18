@@ -8,9 +8,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "task_comments")
+@Table(name = TaskComment.TABLE_NAME)
 public class TaskComment 
 {
+    public static final String TABLE_NAME = "task_comments";
+    
+    public static final String ID_COLUMN = "id";
+    public static final String TASK_COLUMN = "task";
+    public static final String TEXT_COLUMN = "text";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

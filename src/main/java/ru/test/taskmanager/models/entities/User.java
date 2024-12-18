@@ -22,9 +22,17 @@ import jakarta.validation.constraints.Pattern;
 import ru.test.taskmanager.models.properties.Role;
 
 @Entity
-@Table(name = "users")
+@Table(name = User.TABLE_NAME)
 public final class User implements UserDetails
 {
+    public static final String TABLE_NAME = "users";
+
+    public static final String ID_COLUMN = "id";
+    public static final String EMAIL_COLUMN = "email";
+    public static final String PASSWORD_COLUMN = "password";
+    public static final String ENABLED_COLUMN = "enabled";
+    public static final String ROLES_RELATION = "roles";
+
     public static final int MIN_PASSWORD_SIZE = 5;
 
     public static final String PASSWORD_REGEX = "^[a-zA-Z0-9#?!@$%^&*-]{" + MIN_PASSWORD_SIZE + ",}$";
@@ -49,12 +57,12 @@ public final class User implements UserDetails
     private boolean enabled = true;
 
     @OneToMany(mappedBy = "user")
-    private Set<UserRole> roles;
+    private Set<UserRolePair> roles;
 
     protected User()
     {
         this.roles = new HashSet<>(List.of(
-            new UserRole(this, Role.USER)
+            new UserRolePair(this, Role.USER)
         ));
     }
 
@@ -100,7 +108,7 @@ public final class User implements UserDetails
     public void setRoles(Collection<Role> roles)
     {
         this.roles = roles.stream()
-            .map((role) -> new UserRole(this, role))
+            .map((role) -> new UserRolePair(this, role))
             .collect(Collectors.toSet());
     }
 
@@ -117,9 +125,9 @@ public final class User implements UserDetails
         }
     }
 
-    public UserRole addRole(Role role)
+    public UserRolePair addRole(Role role)
     {
-        UserRole authority = new UserRole(this, role);
+        UserRolePair authority = new UserRolePair(this, role);
         this.roles.add(authority);
         return authority;
     }
@@ -131,7 +139,7 @@ public final class User implements UserDetails
             .collect(Collectors.toSet());
     }
 
-    public Collection<UserRole> getRoles()
+    public Collection<UserRolePair> getRoles()
     {
         return this.roles;
     }
