@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.test.taskmanager.models.entities.User;
-import ru.test.taskmanager.models.entities.UserRole;
+import ru.test.taskmanager.models.entities.UserRolePair;
 import ru.test.taskmanager.models.properties.Role;
 import ru.test.taskmanager.repositories.UserRepository;
 import ru.test.taskmanager.repositories.UserRoleRepository;
@@ -30,7 +30,7 @@ public class AdminService
             return false;
         }
 
-        UserRole authority = user.addRole(Role.ADMIN);
+        UserRolePair authority = user.addRole(Role.ADMIN);
         try
         {
             this.authorities.save(authority);

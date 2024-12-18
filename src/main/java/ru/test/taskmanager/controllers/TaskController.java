@@ -82,7 +82,7 @@ public class TaskController
     )
     {
         return ResponseEntity.ok(
-            this.taskService.getTaskFor(user, filter)
+            this.taskService.getTasksFor(user, filter)
                 .stream().map(TaskInfoResponse::new)
                 .toList()
         );

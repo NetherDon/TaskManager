@@ -16,7 +16,7 @@ import ru.test.taskmanager.exceptions.auth.EmailDuplicateException;
 import ru.test.taskmanager.exceptions.auth.RegistrationException;
 import ru.test.taskmanager.models.entities.JwtDetails;
 import ru.test.taskmanager.models.entities.User;
-import ru.test.taskmanager.models.entities.UserRole;
+import ru.test.taskmanager.models.entities.UserRolePair;
 import ru.test.taskmanager.repositories.JwtRepository;
 import ru.test.taskmanager.repositories.UserRepository;
 import ru.test.taskmanager.repositories.UserRoleRepository;
@@ -102,7 +102,7 @@ public class AuthenticationService implements UserDetailsService
         try
         {
             this.users.save(user);
-            for (UserRole pair : user.getRoles())
+            for (UserRolePair pair : user.getRoles())
             {
                 this.roles.save(pair);
             }

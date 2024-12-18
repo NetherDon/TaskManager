@@ -6,8 +6,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import ru.test.taskmanager.exceptions.task.TaskNotFoundException;
@@ -17,6 +19,8 @@ import ru.test.taskmanager.exceptions.task.status.UserNotTaskExecutorException;
 import ru.test.taskmanager.models.entities.Task;
 import ru.test.taskmanager.models.entities.TaskExecutor;
 import ru.test.taskmanager.models.entities.User;
+import ru.test.taskmanager.models.entities.specifications.CommonSpecifications;
+import ru.test.taskmanager.models.entities.specifications.TaskSpecifications;
 import ru.test.taskmanager.models.properties.ITaskFilter;
 import ru.test.taskmanager.models.properties.Role;
 import ru.test.taskmanager.models.properties.TaskPriority;
@@ -63,11 +67,17 @@ public class TaskService
         this.tasks.save(task);
     }
 
-    public List<Task> getTaskFor(User user, ITaskFilter filter)
+    public List<Task> getTasksFor(User user, ITaskFilter filter)
     {
-        return this.tasks.findByExecutorsUser(
-            user, PageRequest.of(filter.getPage(), PAGE_SIZE, Sort.by(Order.desc("priority")))
-        );
+        System.out.println(filter.getPriority());
+        Pageable pages = PageRequest.of(filter.getPage(), PAGE_SIZE, Sort.by(Order.desc(Task.PRIORITY_COLUMN)));
+        Specification<Task> condition = Specification.where(
+                user.hasRole(Role.ADMIN) ? null : TaskSpecifications.hasExecutor(user)
+            )
+            .and(CommonSpecifications.equalIfValueNotNull(Task.PRIORITY_COLUMN, filter.getPriority()))
+            .and(CommonSpecifications.equalIfValueNotNull(Task.STATUS_COLUMN, filter.getStatus()));
+
+        return this.tasks.findAll(condition, pages).toList();
     }
 
     public Task createNewTask(

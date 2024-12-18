@@ -6,6 +6,7 @@ import org.springframework.lang.Nullable;
 
 import ru.test.taskmanager.models.entities.Task;
 import ru.test.taskmanager.models.properties.TaskPriority;
+import ru.test.taskmanager.models.properties.TaskStatus;
 
 public class TaskInfoResponse
 {
@@ -40,6 +41,11 @@ public class TaskInfoResponse
     public TaskPriority getPriority()
     {
         return this.task.getPriority();
+    }
+
+    public TaskStatus getStatus()
+    {
+        return this.task.getStatus();
     }
 
     public List<String> getExecutors()
