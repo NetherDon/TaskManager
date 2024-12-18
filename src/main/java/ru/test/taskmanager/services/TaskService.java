@@ -16,7 +16,6 @@ import ru.test.taskmanager.exceptions.task.TaskNotFoundException;
 import ru.test.taskmanager.exceptions.task.UnavailableTaskException;
 import ru.test.taskmanager.exceptions.task.creation.EmptyExecutorListException;
 import ru.test.taskmanager.exceptions.task.status.UnavailableTaskStatusException;
-import ru.test.taskmanager.exceptions.task.status.UserNotTaskExecutorException;
 import ru.test.taskmanager.models.entities.Task;
 import ru.test.taskmanager.models.entities.TaskExecutor;
 import ru.test.taskmanager.models.entities.User;
@@ -57,21 +56,11 @@ public class TaskService
         return task;
     }
 
-    public void setTaskStatus(long taskId, User user, TaskStatus status)
+    public void setTaskStatus(Task task, TaskStatus status, User user)
     {
-        Task task = this.getTask(taskId);
-
-        if (!user.hasRole(Role.ADMIN))
+        if (!user.hasRole(Role.ADMIN) && !status.canBeSetByExecutor())
         {
-            if (!task.isExecutor(user))
-            {
-                throw new UserNotTaskExecutorException();
-            }
-
-            if (!status.canBeSetByExecutor())
-            {
-                throw new UnavailableTaskStatusException(status);
-            }
+            throw new UnavailableTaskStatusException(status);
         }
 
         task.setStatus(status);

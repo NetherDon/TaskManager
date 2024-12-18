@@ -53,7 +53,7 @@ public class ExceptionApiHandler
     }
 
     @ExceptionHandler(UnavailableTaskStatusException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public FailResponse unavailableTaskStatusException(UnavailableTaskStatusException exception)
     {
         return FailResponse.of(

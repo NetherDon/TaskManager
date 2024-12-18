@@ -36,17 +36,6 @@ public class TaskController
     @Autowired
     private UserService userService;
 
-    @PostMapping("/set-status")
-    public ResponseEntity<?> changeTaskStatus(
-        @AuthenticationPrincipal User user,
-        @RequestParam(required = true) long taskId,
-        @RequestParam(required = true) TaskStatus status
-    )
-    {
-        this.taskService.setTaskStatus(taskId, user, status);
-        return ResponseEntity.ok(status);
-    }
-
     @PostMapping("/create")
     public ResponseEntity<?> createTask(
         @AuthenticationPrincipal User author,
@@ -99,9 +88,15 @@ public class TaskController
         return ResponseEntity.ok(new TaskInfoResponse(task));
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<?> test(@AuthenticationPrincipal User user)
+    @PostMapping("/{id}/set-status")
+    public ResponseEntity<?> changeTaskStatus(
+        @AuthenticationPrincipal User user,
+        @PathVariable(name = "id", required = true) long taskId,
+        @RequestParam(required = true) TaskStatus status
+    )
     {
-        return ResponseEntity.ok(String.valueOf(user));
+        Task task = this.taskService.getTask(taskId, user);
+        this.taskService.setTaskStatus(task, status, user);
+        return ResponseEntity.ok("Task status changed to '" + status + "'");
     }
 }
