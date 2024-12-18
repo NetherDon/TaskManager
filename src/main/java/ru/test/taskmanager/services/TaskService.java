@@ -1,6 +1,8 @@
 package ru.test.taskmanager.services;
 
+import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,14 +19,17 @@ import ru.test.taskmanager.exceptions.task.UnavailableTaskException;
 import ru.test.taskmanager.exceptions.task.creation.EmptyExecutorListException;
 import ru.test.taskmanager.exceptions.task.status.UnavailableTaskStatusException;
 import ru.test.taskmanager.models.entities.Task;
+import ru.test.taskmanager.models.entities.TaskComment;
 import ru.test.taskmanager.models.entities.TaskExecutor;
 import ru.test.taskmanager.models.entities.User;
 import ru.test.taskmanager.models.entities.specifications.CommonSpecifications;
 import ru.test.taskmanager.models.entities.specifications.TaskSpecifications;
+import ru.test.taskmanager.models.properties.ITaskCommentFilter;
 import ru.test.taskmanager.models.properties.ITaskFilter;
 import ru.test.taskmanager.models.properties.Role;
 import ru.test.taskmanager.models.properties.TaskPriority;
 import ru.test.taskmanager.models.properties.TaskStatus;
+import ru.test.taskmanager.repositories.TaskCommentRepository;
 import ru.test.taskmanager.repositories.TaskExecutorRepository;
 import ru.test.taskmanager.repositories.TaskRepository;
 
@@ -35,6 +40,9 @@ public class TaskService
 
     @Autowired
     private TaskRepository tasks;
+
+    @Autowired
+    private TaskCommentRepository comments;
 
     @Autowired
     private TaskExecutorRepository taskExecutors;
@@ -110,4 +118,21 @@ public class TaskService
             this.taskExecutors.save(executor);
         }
     }
+
+    public List<TaskComment> getComments(Task task, ITaskCommentFilter filter)
+    {
+        Order order = filter.sortByNewest() 
+            ? Order.asc(TaskComment.DATE_COLUMN) 
+            : Order.desc(TaskComment.DATE_COLUMN);
+        Pageable pages = PageRequest.of(filter.getPage(), PAGE_SIZE, Sort.by(order));
+        return this.comments.findAll(pages).toList();
+    }
+
+    public void addComment(Task task, User user, String text)
+    {
+        ZonedDateTime date = ZonedDateTime.now();
+        TaskComment comment = new TaskComment(task, user, text, date);
+        this.comments.save(comment);
+    }
+
 }

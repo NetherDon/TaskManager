@@ -15,12 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import ru.test.taskmanager.exceptions.task.creation.TaskExecutorNotFoundException;
 import ru.test.taskmanager.models.entities.Task;
 import ru.test.taskmanager.models.entities.User;
 import ru.test.taskmanager.models.properties.TaskStatus;
+import ru.test.taskmanager.models.requests.TaskCommentListFilterRequest;
 import ru.test.taskmanager.models.requests.TaskCreationRequest;
 import ru.test.taskmanager.models.requests.TaskListFilterRequest;
+import ru.test.taskmanager.models.responses.TaskCommentResponse;
 import ru.test.taskmanager.models.responses.TaskCreatedResponse;
 import ru.test.taskmanager.models.responses.TaskInfoResponse;
 import ru.test.taskmanager.services.TaskService;
@@ -98,5 +102,32 @@ public class TaskController
         Task task = this.taskService.getTask(taskId, user);
         this.taskService.setTaskStatus(task, status, user);
         return ResponseEntity.ok("Task status changed to '" + status + "'");
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<?> getComments(
+        @AuthenticationPrincipal User user,
+        @PathVariable(name = "id", required = true) long taskId,
+        @Valid TaskCommentListFilterRequest filter
+    )
+    {
+        Task task = this.taskService.getTask(taskId, user);
+        return ResponseEntity.ok(
+            this.taskService.getComments(task, filter).stream()
+                .map(TaskCommentResponse::new)
+                .toList()
+        );
+    }
+
+    @PostMapping("/{id}/comments/add")
+    public ResponseEntity<?> addComment(
+        @AuthenticationPrincipal User user,
+        @PathVariable(name = "id", required = true) long taskId,
+        @RequestParam(required = true) @NotBlank String text
+    )
+    {
+        Task task = this.taskService.getTask(taskId, user);
+        this.taskService.addComment(task, user, text);
+        return ResponseEntity.ok("The comment was successfully added");
     }
 }
