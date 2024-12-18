@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -86,6 +87,16 @@ public class TaskController
                 .stream().map(TaskInfoResponse::new)
                 .toList()
         );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> get(
+        @AuthenticationPrincipal User user,
+        @PathVariable(required = true) long id
+    ) 
+    {
+        Task task = this.taskService.getTask(id, user);
+        return ResponseEntity.ok(new TaskInfoResponse(task));
     }
 
     @PostMapping("/test")

@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import ru.test.taskmanager.exceptions.task.TaskNotFoundException;
+import ru.test.taskmanager.exceptions.task.UnavailableTaskException;
 import ru.test.taskmanager.exceptions.task.creation.EmptyExecutorListException;
 import ru.test.taskmanager.exceptions.task.status.UnavailableTaskStatusException;
 import ru.test.taskmanager.exceptions.task.status.UserNotTaskExecutorException;
@@ -44,6 +45,16 @@ public class TaskService
         return this.tasks.findById(id).orElseThrow(() ->
             new TaskNotFoundException("Task not found")
         );
+    }
+
+    public Task getTask(long id, User user)
+    {
+        Task task = this.getTask(id);
+        if (!user.hasRole(Role.ADMIN) && ! task.isExecutor(user))
+        {
+            throw new UnavailableTaskException("The task is not available to the user");
+        }
+        return task;
     }
 
     public void setTaskStatus(long taskId, User user, TaskStatus status)
