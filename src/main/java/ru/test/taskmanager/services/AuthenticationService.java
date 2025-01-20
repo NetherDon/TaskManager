@@ -66,6 +66,11 @@ public class AuthenticationService implements UserDetailsService
             );
         }
 
+        if (!user.getPassword().equals(password))
+        {
+            throw new BadCredentialsException("Incorrect password");
+        }
+
         this.authTokens.logoutUser(user);
         
         JwtDetails token = new JwtDetails(
