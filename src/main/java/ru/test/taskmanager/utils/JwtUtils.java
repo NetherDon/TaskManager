@@ -29,14 +29,19 @@ public class JwtUtils
         SignatureAlgorithm.HS256.getJcaName()
     );
 
-    public String generateTokenFor(String username) 
+    public String generateTokenFor(String username, Date date) 
     {
         return Jwts.builder()
             .setSubject(username)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+            .setIssuedAt(date)
+            .setExpiration(new Date(date.getTime() + EXPIRATION_TIME))
             .signWith(SECRET_KEY)
             .compact();
+    }
+
+    public String generateTokenFor(String username) 
+    {
+        return this.generateTokenFor(username, new Date());
     }
 
     public String extractUsername(String token) throws ExpiredJwtException

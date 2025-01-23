@@ -11,7 +11,7 @@ public class TaskCommentListFilterRequest implements ITaskCommentFilter
     private int page = 0;
 
     @Override
-    public boolean sortByNewest() 
+    public boolean isSortingByNewestEnabled() 
     {
         return this.newest;
     }

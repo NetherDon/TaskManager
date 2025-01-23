@@ -20,7 +20,7 @@ import ru.test.taskmanager.services.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthentificationController 
+public class AuthenticationController 
 {
     @Autowired
     private AuthenticationService authService;

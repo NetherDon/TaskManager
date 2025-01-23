@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import ru.test.taskmanager.exceptions.task.creation.TaskExecutorNotFoundException;
 import ru.test.taskmanager.models.entities.Task;

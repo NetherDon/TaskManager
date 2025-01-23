@@ -1,7 +1,6 @@
 package ru.test.taskmanager.models.entities;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

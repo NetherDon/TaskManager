@@ -1,10 +1,7 @@
 package ru.test.taskmanager.models.entities;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,7 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import ru.test.taskmanager.models.properties.TaskPriority;
 import ru.test.taskmanager.models.properties.TaskStatus;
@@ -110,6 +106,11 @@ public class Task
     public void setStatus(TaskStatus status)
     {
         this.status = status;
+    }
+
+    public boolean isCanceled()
+    {
+        return this.status == TaskStatus.CANCELED;
     }
 
     public TaskPriority getPriority()

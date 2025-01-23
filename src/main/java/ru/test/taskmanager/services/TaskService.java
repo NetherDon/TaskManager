@@ -2,7 +2,6 @@ package ru.test.taskmanager.services;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,7 +82,7 @@ public class TaskService
                 user.hasRole(Role.ADMIN) ? null : TaskSpecifications.hasExecutor(user)
             )
             .and(CommonSpecifications.equalIfValueNotNull(Task.PRIORITY_COLUMN, filter.getPriority()))
-            .and(CommonSpecifications.equalIfValueNotNull(Task.STATUS_COLUMN, filter.getStatus()));
+            .and(TaskSpecifications.hasStatus(filter.getStatus()));
 
         return this.tasks.findAll(condition, pages).toList();
     }
@@ -121,7 +120,7 @@ public class TaskService
 
     public List<TaskComment> getComments(Task task, ITaskCommentFilter filter)
     {
-        Order order = filter.sortByNewest() 
+        Order order = filter.isSortingByNewestEnabled() 
             ? Order.asc(TaskComment.DATE_COLUMN) 
             : Order.desc(TaskComment.DATE_COLUMN);
         Pageable pages = PageRequest.of(filter.getPage(), PAGE_SIZE, Sort.by(order));
